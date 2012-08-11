@@ -49,12 +49,12 @@ class BoletoItau(BoletoData):
 
     @property
     def campo_livre(self):
-        content = "%3s%8s%1s%4s%5s%1s%3s" % (self.carteira,
-                                             self.nosso_numero,
-                                             self.dv_nosso_numero,
-                                             self.agencia_cedente,
-                                             self.conta_cedente,
-                                             self.dv_agencia_conta_cedente,
-                                             '000'
-                                             )
-        return content
+        return str("%3s%8s%1s%4s%5s%1s%3s" % (
+            self.carteira,
+            self.nosso_numero,
+            self.dv_nosso_numero,
+            self.agencia_cedente,
+            self.conta_cedente,
+            self.dv_agencia_conta_cedente,
+            '000'
+        ))
