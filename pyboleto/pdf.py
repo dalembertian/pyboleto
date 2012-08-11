@@ -458,6 +458,15 @@ class BoletoPDF(object):
         self.pdfCanvas.drawString(0, y + self.deltaTitle, 'Sacado')
         sacado = boletoDados.sacado
 
+        # CNPJ/CPF, se houver
+        if boletoDados.sacado_documento:
+            self.pdfCanvas.drawString(110 * mm, y + self.deltaTitle,
+                'CNPJ/CPF:')
+            self.pdfCanvas.setFont('Helvetica', self.fontSizeValue)
+            self.pdfCanvas.drawString(125 * mm, y + self.heightLine - 10,
+                boletoDados.sacado_documento)
+            self.pdfCanvas.setFont('Helvetica', self.fontSizeTitle)
+
         # Linha grossa dividindo o Sacado
         y += self.heightLine
         self.pdfCanvas.setLineWidth(2)
