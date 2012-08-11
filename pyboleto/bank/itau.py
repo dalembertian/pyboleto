@@ -1,23 +1,23 @@
 # -*- coding: utf-8
 from ..data import BoletoData, custom_property
 
-### CAUTION - NÃO TESTADO ###
-
 
 class BoletoItau(BoletoData):
-    '''Implementa Boleto Itaú
-
-        Gera Dados necessários para criação de boleto para o banco Itau
-        Todas as carteiras com excessão das que utilizam 15 dígitos: (106,107,
-        195,196,198)
-    '''
+    """
+    Gera Dados necessários para criação de boleto para o banco Itau
+    Todas as carteiras com excessão das que utilizam 15 dígitos: (106,107,
+    195,196,198)
+    """
 
     # Nosso numero (sem dv) com 8 digitos
     nosso_numero = custom_property('nosso_numero', 8)
+
     # Conta (sem dv) com 5 digitos
     conta_cedente = custom_property('conta_cedente', 5)
+
     #  Agência (sem dv) com 4 digitos
     agencia_cedente = custom_property('agencia_cedente', 4)
+
     carteira = custom_property('carteira', 3)
 
     def __init__(self):
