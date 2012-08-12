@@ -1,13 +1,47 @@
 #!/Users/dudus/Work/pyboleto/venv/bin/python
 # -*- coding: utf-8 -*-
+
+import datetime
+
 import pyboleto
 from pyboleto.bank.real import BoletoReal
 from pyboleto.bank.bradesco import BoletoBradesco
 from pyboleto.bank.caixa import BoletoCaixa
 from pyboleto.bank.bancodobrasil import BoletoBB
 from pyboleto.bank.santander import BoletoSantander
+from pyboleto.bank.itau import BoletoItau
 from pyboleto.pdf import BoletoPDF
-import datetime
+
+
+def print_teste_boleto(boleto, banco_nome):
+    """
+    Gera dois arquivos PDF para teste do 'boleto', um com "normal",
+    outro no formato "carnê duplo", cada um composo de duas páginas
+    iguais.
+
+    boleto: instância de classe descendente de BoletoData (ex.: BoletoItau)
+    banco_nome: string para geração do nome do PDF (ex.: 'itau')
+
+    FIXME: com esta generalização, perde-se apenas o diferente nome de cliente
+    em cada boleto (teste 1, teste 2, etc.). Opcionalmente, esta função poderia
+    aceitar uma lista de boletos, em vez de apenas um.
+
+    TODO: refatorar testes abaixo (print_bb, print_caixa, etc.) para
+    usar esta função genérica.
+    """
+    # Caixa Formato normal - uma pagina por folha A4
+    pdf = BoletoPDF('boleto-%s-formato-normal-teste.pdf' % banco_nome)
+    for i in range(2):
+        pdf.drawBoleto(boleto)
+        pdf.nextPage()
+    pdf.save()
+
+    # Formato carnê - uma pagina por folha A4
+    pdf = BoletoPDF('boleto-%s-formato-carne-teste.pdf' % banco_nome, True)
+    for i in range(2):
+        pdf.drawBoletoCarneDuplo(boleto, boleto)
+        pdf.nextPage()
+    pdf.save()
 
 
 def print_bb():
@@ -249,7 +283,34 @@ def print_caixa():
 
 
 def print_itau():
-    pass
+    d = BoletoItau()
+    d.carteira = '175'
+    d.cedente = 'Empresa ACME LTDA'
+    d.cedente_documento = "102.323.777-01"
+    d.cedente_endereco = "Rua Acme, 123 - Centro - Sao Paulo/SP - CEP: 12345-678"
+    d.agencia_cedente = '1565'
+    d.conta_cedente = '32414'
+    d.data_vencimento = datetime.date(2010, 3, 27)
+    d.data_documento = datetime.date(2010, 2, 12)
+    d.data_processamento = datetime.date(2010, 2, 12)
+    d.valor = 255.00
+    d.valor_documento = d.valor
+    d.nosso_numero = "80195250"
+    d.numero_documento = d.nosso_numero
+    d.instrucoes = [
+        "1 - Sr. Caixa, cobrar multa de 2% após o vencimento",
+        "2 - Receber até 10 dias após o vencimento",
+    ]
+    d.demonstrativo = [
+        "1 - Serviço Teste R$ 255,00",
+        "2 - Total R$ 255,00",
+    ]
+    d.sacado = [
+        "John Doe",
+        "Sesame Street, w/o number",
+        "Nowhere Land, NL - 00000-000"
+    ]
+    print_teste_boleto(d, 'itau')
 
 
 def print_all():
@@ -264,9 +325,6 @@ def print_all():
     print "Bradesco"
     print_bradesco()
 
-    #print "Itau"
-    #print_itau()
-
     print "Caixa"
     print_caixa()
 
@@ -275,6 +333,9 @@ def print_all():
 
     print "Santander"
     print_santander()
+
+    print "Itau"
+    print_itau()
 
     print "----------------------------------"
     print "Ok"
